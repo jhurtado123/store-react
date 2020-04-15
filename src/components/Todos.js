@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Todo from "./Todo";
 
 class Input extends Component {
   state = {
@@ -40,19 +41,24 @@ class Input extends Component {
 
 class Todos extends Component {
   state = {
-    todos: ["comprar leche"],
+    todos: [{id:1, title: "comprar leche"}],
   };
 
   handleAddTodo = (inputValue) => {
-    console.log("handleTodo", inputValue);
     const { todos } = this.state;
     this.setState({
-      todos: [...todos, inputValue],
+      todos: [...todos, {id: this._uniqId(), title: inputValue}],
     });
   };
 
-  handleDelete = (e) => {
-    // console.log(e.target);
+  _uniqId() {
+    return new Date().getTime();
+  }
+
+  handleDelete = (id) => {
+   this.setState({
+     todos: this.state.todos.filter(element => element.id !== id),
+   })
   };
 
   render() {
@@ -63,19 +69,19 @@ class Todos extends Component {
         <h2>Mis tareas</h2>
         <Input click={this.handleAddTodo} ctx={that} />
         <ul>
-          {todos.map((todo, index) => {
+          {/*todos.map((todo) => {
             return (
-              <div key={index}>
-                <li>{todo}</li>
-                <button onClick={this.handleDelete}>delete</button>
+              <div key={todo.id}>
+                <li>{todo.title}</li>
+                <button onClick={() => this.handleDelete(todo.id) }>delete</button>
               </div>
             );
-          })}
-          {/* {todos.map((todo, index) => {
+          })*/}
+          { todos.map((todo, index) => {
             return (
-              <Todo key={index} algo={} />
+              <Todo key={index} handleRemove={() => this.handleDelete(todo.id)} title={todo.title} />
             );
-          })} */}
+          })}
         </ul>
       </div>
     );
